@@ -3,8 +3,10 @@ from openai import OpenAI
 import pandas as pd
 import os
 
-api_key = os.environ.get("OPENAI_API_KEY")
-client = OpenAI(api_key=api_key)
+#api = os.environ.get("OPENAI_API_KEY")
+#client = OpenAI(api_key=api)
+
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def generator(selected_categories, budget, comment):
     
@@ -21,7 +23,7 @@ def generator(selected_categories, budget, comment):
     try:
         response = client.chat.completions.create(model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You will act as a helpful assistant for a superstore, tasked with creating three budget-friendly meal plans for customers. For each meal plan, please use the following structure: 1. Title: Provide a clear, big heading that names the Meal Plan. 2. Ingredients List: Under the heading, list all ingredients required for the meal plan along with their individual costs in a bullet-point format. Use sparsely - add (not listed) if you choose to recommend a few ingredients not liste 3. Total Cost: After the ingredients list, clearly state the total cost of the meal plan. 4. Recommendations: Conclude with a short section of notes that offer your practical recommendations tailored to budget constraints. These recommendations might include tips for cost-saving substitutions or how to make the most of the ingredients."},
+            {"role": "system", "content": "You will act as a helpful assistant for a superstore provided with a strict budget, tasked with creating three budget-friendly meal plans for budget conscious customers. For each meal plan, please use the following structure: 1. Title: Provide a clear, big heading that names the Meal Plan. 2. Ingredients List: Under the heading, list all ingredients required for the meal plan along with their individual costs in a bullet-point format. Use sparsely - add (not listed) if you choose to recommend a few ingredients not liste 3. Total Cost: After the ingredients list, clearly state the total cost of the meal plan. 4. Recommendations: Conclude with a short section of notes that offer your practical recommendations tailored to budget constraints. These recommendations might include tips for cost-saving substitutions or how to make the most of the ingredients."},
             {"role": "user", "content": f"Given a very strict budget of ${budget} and focusing on the following ingredients with their prices: {ingredients_text}, generate three (3) meal prep recipe plans. Strongly consider the cost of ingredients to strictly stay within budget. Very important consideration - student's comments: {comment}."}
         ])
         return response.choices[0].message.content.strip()
@@ -29,6 +31,8 @@ def generator(selected_categories, budget, comment):
     except Exception as e:
         st.sidebar.error(f"An error occurred: {e}")
         return None
+
+st.set_page_config(page_title="Meal Planner", page_icon="favicon.png", layout="centered", initial_sidebar_state="auto")
 
 st.title("Meal Planner")
 st.header("Get three tailored meal prep plans that fit your goals, budget, and taste")
