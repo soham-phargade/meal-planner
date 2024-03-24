@@ -5,8 +5,11 @@ import os
 
 #api = os.environ.get("OPENAI_API_KEY")
 #client = OpenAI(api_key=api)
+#client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+#for vercel
+API_KEY = os.environ.get('API_URL')
+client = OpenAI(api_key=API_KEY)
 
 def generator(selected_categories, budget, comment):
     
